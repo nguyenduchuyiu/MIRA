@@ -69,3 +69,6 @@ venv.bak/
 # Windows
 Thumbs.db
 ehthumbs.db
+
+# VS Code
+.vscode/
