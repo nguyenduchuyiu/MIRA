@@ -72,3 +72,37 @@ ehthumbs.db
 
 # VS Code
 .vscode/
+
+#Video files
+*.avi
+*.mp4
+*.mov
+*.wmv
+*.flv
+*.mkv
+*.webm
+*.mpg
+*.mpeg
+*.m4v
+
+# Images
+*.jpg
+*.png
+*.jpeg
+*.gif
+*.bmp
+*.tiff
+*.webp
+
+# Resources
+resources/
+
+#Sound files
+*.wav
+*.mp3
+*.ogg
+*.flac
+*.aac
+*.m4a
+*.wma
+*.aiff

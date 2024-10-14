@@ -26,7 +26,7 @@ class ASR:
         except Exception as e:
             print(f"Error processing responses: {str(e)}")
 
-    def start_streaming(self):
+    def start(self):
         """Begins streaming from the microphone to the Speech-to-Text API."""
         try:
             config = speech.RecognitionConfig(
@@ -59,3 +59,6 @@ class ASR:
             print(f"An error occurred while setting up streaming: {str(e)}")
 
         return self.total_transcript
+
+    def reset_transcript(self):
+        self.total_transcript = ""
