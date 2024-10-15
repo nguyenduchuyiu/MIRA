@@ -23,7 +23,7 @@ class ScenarioRecognition:
         
         _, encoded_image = cv2.imencode('.jpg', key_frame)
         image_data = encoded_image.tobytes()
-        
+            
         result = self.client.analyze(
             image_data=image_data,
             visual_features=[
@@ -41,6 +41,8 @@ class ScenarioRecognition:
             
             # Join the texts together with appropriate punctuation
             scenario = '. '.join(extracted_texts) + '.'
+            
+            print("scenario: ", scenario)
             
             return scenario
         else:
@@ -73,4 +75,6 @@ class ScenarioRecognition:
 
 if __name__ == "__main__":
     scenario_recognition = ScenarioRecognition()
-    print(scenario_recognition.analyze_image("resources/test_video.mp4"))
+    scenario = scenario_recognition.analyze_image("resources/record_20241015-155123.avi")
+    print(scenario)
+    print(type(scenario))

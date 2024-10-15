@@ -1,7 +1,5 @@
 import threading
 import time
-import cv2
-import queue
 from audio_processing.asr import ASR
 from reasoning_engine.nlu import NLU
 from audio_processing.tts import TextToSpeech
@@ -10,20 +8,15 @@ from visual_processing.scenario_recognition import ScenarioRecognition
 
 def start_recording():
     global video_thread
-    global asr_thread
     
     current_time = time.strftime("%Y%m%d-%H%M%S")
     video_name = f"record_{current_time}.avi"
     
     video_thread = VideoRecorder(name=video_name, fourcc="MJPG", sizex=640, sizey=480, camindex=0, fps=30)
-    asr_thread = ASR()
-    
+
     video_thread.start()
-    transcript = asr_thread.start()
     
-    print("Recording started")
-    
-    return transcript, video_thread.save_path
+    return video_thread.save_path
 
 
 def stop_recording():
@@ -41,23 +34,33 @@ def stop_recording():
         time.sleep(1)
 
 
-def nlu_process(nlu, transcript, scenario):
-    response = nlu.process(transcript, scenario)
-    print(f"Gemini Response: {response}")
-    return response
 
 
 if __name__ == "__main__":
-    asr = ASR()
     nlu = NLU()
     tts = TextToSpeech()
     scenario_recognition = ScenarioRecognition()
+    asr_thread = ASR()
     
     while True:
-        transcript, video_path = start_recording()
+        print("I'm hearing!")
+        transcript = asr_thread.start()
+        
+        print("I'm recording!")
+        video_path = start_recording()
+        time.sleep(1)
         stop_recording()
+        
+        print("I'm analyzing!")
         scenario = scenario_recognition.analyze_image(video_path)
-        response = nlu_process(nlu, transcript, scenario)
+        
+        print("I'm reasoning!")
+        response = nlu.process(transcript, scenario)
+        print(f"Gemini Response: {response}")
+        
+        print("I'm synthesizing!")
         tts.synthesize(response)
         print("Response complete. Ready for next input.")
-        asr.reset_transcript()
+        
+        asr_thread.reset_transcript()
+        

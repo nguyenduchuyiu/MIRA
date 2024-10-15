@@ -28,6 +28,9 @@ class VideoRecorder():
                 self.video_out.write(video_frame)
                 self.frames.append(video_frame)
                 self.frame_counts += 1
+                # Limit the size of the frames list to prevent memory overflow
+                if len(self.frames) > 100:  # Example limit
+                    self.frames.pop(0)
                 # Removed cv2.imshow from here
                 if cv2.waitKey(1) & 0xFF == ord('q'):
                     break
@@ -42,6 +45,7 @@ class VideoRecorder():
             try:
                 self.video_out.release()
                 self.video_cap.release()
+                self.join()  # Ensure the thread is joined
             except Exception as e:
                 print(f"An error occurred while stopping video: {e}")
 

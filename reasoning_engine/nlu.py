@@ -8,11 +8,11 @@ class NLU:
         self.gemini_api = GeminiAPI()
         self.conversation_history = []
 
-    def process(self, text, video_path, max_retries=3, retry_delay=1):
+    def process(self, text, scenario, max_retries=3, retry_delay=1):
         for attempt in range(max_retries):
             try:
                 # Generate response using the GeminiAPI
-                response, usage_metadata = self.gemini_api.generate_response(text, video_path)
+                response, usage_metadata = self.gemini_api.generate_response(text, scenario)
                 # Log token usage for monitoring
                 print(f"Token usage: {usage_metadata}")
                 

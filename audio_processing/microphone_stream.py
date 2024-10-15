@@ -55,3 +55,8 @@ class MicrophoneStream:
             if chunk is None:
                 return
             yield chunk
+
+if __name__ == "__main__":
+    mic = MicrophoneStream(RATE, CHUNK)
+    for chunk in mic.generator():
+        print(chunk)

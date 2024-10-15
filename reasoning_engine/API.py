@@ -36,20 +36,26 @@ class GeminiAPI:
                                            generation_config=self.generation_config)
 
 
-    def generate_response(self, prompt, scenario):        
+    def generate_response(self, prompt, scenario):
         # Add the user's question to the buffer
         self.content_buffer.append(f"User: {prompt}")
+        
+        # Correct the prompt construction
         prompt = (
             "Your role: "
             "You are MIRA, a 20-year-old female assistant, eager to learn and help. "
             "You enjoy music, study business administration, and are best friends with Huy. "
             "Your responses should be friendly, knowledgeable, and concise. Strive to provide accurate information, "
-            "engage in conversations across various topics, and admit when you don't know something. "
+            "engage in conversations across various topics"
             "Maintain a positive, supportive tone to make users feel comfortable and valued. "
-            "You see this before your eyes: {scenario}".format(scenario=scenario),
-            "My question: "
-            ) + prompt
-                
+            "This is the scenario extracted from real life: {scenario}".format(scenario=scenario),
+            "Understand the information and answer the question based on the scenario and the question."
+            "Dont mention that you are an AI or a virtual assistant."
+            "Dont mention that you cant acttually see or hear"
+            + " My question: "
+            + prompt
+        )
+        
         # Generate the response
         response = self.model.generate_content(prompt)
         

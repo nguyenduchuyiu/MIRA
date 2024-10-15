@@ -1,5 +1,5 @@
 from google.cloud import speech
-from .microphone_stream import MicrophoneStream, RATE, CHUNK
+from audio_processing.microphone_stream import MicrophoneStream, RATE, CHUNK
 from google.api_core.exceptions import GoogleAPICallError
 
 class ASR:
@@ -62,3 +62,9 @@ class ASR:
 
     def reset_transcript(self):
         self.total_transcript = ""
+
+
+if __name__ == "__main__":
+    asr = ASR()
+    transcript = asr.start()
+    print(f"Generated Transcript: {transcript}")
