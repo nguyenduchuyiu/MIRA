@@ -48,6 +48,7 @@ class MicrophoneStream:
         """Yields audio chunks from the buffer."""
         start_time = time.time()
         while not self.closed:
+            #TODO: This is a temporary fix to stop the stream after a certain amount of time.
             if time.time() - start_time > self._max_seconds:
                 self.closed = True
                 break
