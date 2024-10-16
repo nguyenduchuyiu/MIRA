@@ -1,3 +1,4 @@
+import numpy as np
 import pyaudio
 from six.moves import queue # type: ignore
 import time
@@ -5,15 +6,13 @@ import time
 # Audio recording parameters
 RATE = 16000  # Sample rate (16 kHz)
 CHUNK = int(RATE / 10)  # 100ms chunks
+SILENCE_THRESHOLD = 20 # Number of silent chunks before closing (2 seconds)
 
 class MicrophoneStream:
     """Opens a recording stream as a generator yielding audio chunks."""
-    def __init__(self, rate, chunk, max_seconds=3):
+    def __init__(self, rate, chunk):
         self._rate = rate
         self._chunk = chunk
-        self._max_seconds = max_seconds
-
-        # Create a buffer to hold audio chunks
         self._buff = queue.Queue()
         self.closed = True
 
@@ -46,16 +45,30 @@ class MicrophoneStream:
 
     def generator(self):
         """Yields audio chunks from the buffer."""
-        start_time = time.time()
+        silent_chunks = 0  # Counter for consecutive silent chunks
         while not self.closed:
-            #TODO: This is a temporary fix to stop the stream after a certain amount of time.
-            if time.time() - start_time > self._max_seconds:
-                self.closed = True
-                break
             chunk = self._buff.get()
             if chunk is None:
                 return
+
             yield chunk
+
+            # Check if the chunk contains only noise
+            if self._is_silent(chunk):
+                silent_chunks += 1
+                if silent_chunks > SILENCE_THRESHOLD:
+                    print("Silence detected. Closing stream...")
+                    self.__exit__(None, None, None)  # Close the stream on silence
+                    return
+            else:
+                silent_chunks = 0  # Reset on speech activity
+
+    def _is_silent(self, chunk):
+        # Convert chunk to NumPy array and compute mean energy
+        audio_data = np.frombuffer(chunk, dtype=np.int16)
+        mean_energy = np.abs(audio_data).mean()
+        normalized_energy = mean_energy / np.iinfo(np.int16).max  # Normalize to range [0, 1]
+        return normalized_energy < 0.02  # This mean major of energy come from noise
 
 if __name__ == "__main__":
     mic = MicrophoneStream(RATE, CHUNK)

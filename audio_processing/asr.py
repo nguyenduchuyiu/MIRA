@@ -49,7 +49,10 @@ class ASR:
                     responses = self.client.streaming_recognize(
                         config=streaming_config, requests=requests
                     )
+                    
                     self.process_responses(responses)
+        
+                
                 except GoogleAPICallError as api_error:
                     print(f"Google API error occurred: {str(api_error)}")
                 except Exception as e:

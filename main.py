@@ -1,5 +1,6 @@
 import time
 import cv2
+import random
 from audio_processing.asr import ASR
 from reasoning_engine.nlu import NLU
 from audio_processing.tts import TextToSpeech
@@ -47,6 +48,20 @@ def record_video(duration, fps=30):
 
     return video_name
 
+
+
+def greet():
+    greetings = [
+        "What's the question that you want to ask?",
+        "Can you tell me what you want to know?",
+        "Are there any questions that you want to ask?",
+        "Feel free to ask me anything!"
+    ]
+    chosen_greeting = random.choice(greetings)
+    print(chosen_greeting)
+    tts.synthesize(chosen_greeting)
+    
+
 if __name__ == "__main__":
     nlu = NLU()
     tts = TextToSpeech()
@@ -54,28 +69,33 @@ if __name__ == "__main__":
     asr_thread = ASR()
     
     while True:
-        print("I'm hearing!") #TODO: Add TTS here
-        transcript = asr_thread.start()
+        greet() #FIXME: Uncomment this
         
-        if ("can" in transcript and "see" in transcript):
-            print("Let me see") #TODO: Add TTS here
+        transcript = asr_thread.start()
+        #transcript = input("Please enter the transcript: ")
+        
+        if ("can" in transcript.lower() and "see" in transcript.lower()):
+            print("Let me see")
+            tts.synthesize("Let me see") #FIXME: Uncomment this
             video_path = record_video(duration=RECORD_DURATION)  # Record for 3 seconds
             
             if video_path is None:
-                print("Video recording failed. Skipping analysis.") #TODO: Add TTS here
+                print("Video recording failed. Skipping analysis.")
+                tts.synthesize("Video recording failed.") #FIXME: Uncomment this
                 continue
         
-            print("I'm analyzing!")
             scenario = scenario_recognition.analyze_image(video_path)
+        
+        elif ("i have no questions" in transcript.lower()):
+            print("OK, Ask me anything if you want!")
+            tts.synthesize("OK, Ask me anything if you want!") #FIXME: Uncomment this
+            exit()
         
 
         
-        print("I'm reasoning!")
         response = nlu.process(transcript, scenario)
-        print(f"Gemini Response: {response}")
+        print(f"Mira Response: {response}")
         
-        print("I'm synthesizing!")
-        tts.synthesize(response)
-        print("Response complete. Ready for next input.")
+        tts.synthesize(response) #FIXME: Uncomment this
         
         asr_thread.reset_transcript()
