@@ -69,8 +69,6 @@ if __name__ == "__main__":
     asr_thread = ASR()
     
     while True:
-        greet() #FIXME: Uncomment this
-        
         transcript = asr_thread.start()
         #transcript = input("Please enter the transcript: ")
         
@@ -81,7 +79,7 @@ if __name__ == "__main__":
             
             if video_path is None:
                 print("Video recording failed. Skipping analysis.")
-                tts.synthesize("Video recording failed.") #FIXME: Uncomment this
+                # tts.synthesize("Video recording failed.") #FIXME: Uncomment this
                 continue
         
             scenario = scenario_recognition.analyze_image(video_path)
@@ -99,3 +97,5 @@ if __name__ == "__main__":
         tts.synthesize(response) #FIXME: Uncomment this
         
         asr_thread.reset_transcript()
+        
+        break #FIXME: Uncomment this

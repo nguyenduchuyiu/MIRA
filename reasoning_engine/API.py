@@ -2,9 +2,7 @@ import os
 import google.generativeai as genai
 from google.generativeai import caching
 from google.generativeai.types import GenerationConfig
-import datetime
 from dotenv import load_dotenv
-import base64
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,7 +20,7 @@ class GeminiAPI:
         # Initialize the model
         self.initialize_model()
 
-    def initialize_model(self, model_name='models/gemini-1.5-flash-001', cache_ttl=2):
+    def initialize_model(self, model_name='tunedModels/mira-x3tf6an2hchl', cache_ttl=2):
         # Set up the generation config
         self.generation_config = GenerationConfig(
             temperature=0.9,
@@ -32,26 +30,16 @@ class GeminiAPI:
         )
         
         # Initialize the model
-        self.model = genai.GenerativeModel(model_name=model_name,
-                                           generation_config=self.generation_config)
-
+        self.model = genai.GenerativeModel(
+            model_name=model_name,
+            generation_config=self.generation_config
+        )
 
     def generate_response(self, prompt, scenario=''):
         # Add the user's question to the buffer
         self.content_buffer.append(f"User: {prompt}")
-        
-        # Correct the prompt construction
-        prompt = (
-            "Pretend that you are MIRA, a female assistant, eager to learn and help. "
-            "Your responses should be friendly, knowledgeable, and concise. Strive to provide accurate information, "
-            "engage in conversations across various topics"
-            "Maintain a positive, supportive tone to make users feel comfortable and valued. "
-            "Pretend that you can acttually hear"
-            "Understand the information and answer the question based on the following scenario: {scenario}".format(scenario=scenario) if scenario != "" else "",
-            "Pretend that you can actually see"
-            + " My question: "
-            + prompt
-        )
+
+        prompt = f'{prompt}. Image: {scenario}'
         
         # Generate the response
         response = self.model.generate_content(prompt)
@@ -87,3 +75,18 @@ class GeminiAPI:
         # Load the content buffer from a file
         with open('resources/content_buffer.txt', 'r') as file:
             self.content_buffer = file.readlines()
+
+
+if __name__ == "__main__":
+    # Create an instance of the class
+    mira = GeminiAPI()  # Assuming the class name is MIRA
+    
+    # Test the generate_response method
+    test_prompt = "What is the capital of France?"
+    test_scenario = "Provide a brief description."
+    response_text, usage_metadata = mira.generate_response(test_prompt, test_scenario)
+    
+    # Print the response and metadata
+    print("Response:", response_text)
+    print("Usage Metadata:", usage_metadata)
+

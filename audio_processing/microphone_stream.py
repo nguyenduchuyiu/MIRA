@@ -1,12 +1,26 @@
 import numpy as np
 import pyaudio
-from six.moves import queue # type: ignore
-import time
+from scipy.signal import butter, lfilter
+from six.moves import queue  # type: ignore
+import wave
 
 # Audio recording parameters
-RATE = 16000  # Sample rate (16 kHz)
+RATE = 20000  # Sample rate (20 kHz)
 CHUNK = int(RATE / 10)  # 100ms chunks
-SILENCE_THRESHOLD = 20 # Number of silent chunks before closing (2 seconds)
+SILENCE_THRESHOLD = 20  # Number of silent chunks before closing (2 seconds)
+
+def butter_bandpass(lowcut, highcut, fs, order=5):
+    """Design a bandpass filter."""
+    nyquist = 0.5 * fs  # Nyquist frequency
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    b, a = butter(order, [low, high], btype='band')
+    return b, a
+
+def apply_bandpass_filter(data, lowcut, highcut, fs, order=5):
+    """Apply bandpass filter to audio data."""
+    b, a = butter_bandpass(lowcut, highcut, fs, order)
+    return lfilter(b, a, data)
 
 class MicrophoneStream:
     """Opens a recording stream as a generator yielding audio chunks."""
@@ -42,6 +56,7 @@ class MicrophoneStream:
         self.closed = True
         self._buff.put(None)
         self._audio_interface.terminate()
+        
 
     def generator(self):
         """Yields audio chunks from the buffer."""
@@ -53,7 +68,6 @@ class MicrophoneStream:
 
             yield chunk
 
-            # Check if the chunk contains only noise
             if self._is_silent(chunk):
                 silent_chunks += 1
                 if silent_chunks > SILENCE_THRESHOLD:
@@ -64,13 +78,25 @@ class MicrophoneStream:
                 silent_chunks = 0  # Reset on speech activity
 
     def _is_silent(self, chunk):
-        # Convert chunk to NumPy array and compute mean energy
+        """Check if the audio data is silent."""
+        # Convert chunk to NumPy array
         audio_data = np.frombuffer(chunk, dtype=np.int16)
-        mean_energy = np.abs(audio_data).mean()
-        normalized_energy = mean_energy / np.iinfo(np.int16).max  # Normalize to range [0, 1]
-        return normalized_energy < 0.02  # This mean major of energy come from noise
+
+        # Apply bandpass filter (100-300 Hz)
+        filtered_data = apply_bandpass_filter(
+            audio_data, lowcut=100, highcut=300, fs=self._rate, order=5
+        )
+        mean_energy = np.abs(filtered_data).mean()
+        
+        normalized_energy = mean_energy / np.iinfo(np.int16).max  # Normalize to [0, 1]
+        
+        with open('sound.txt', 'a') as file:
+            file.write(f"{normalized_energy}\n")
+        
+        # Adjusted threshold based on distribution analysis
+        return normalized_energy < 0.004  # Change threshold as necessary
 
 if __name__ == "__main__":
     mic = MicrophoneStream(RATE, CHUNK)
     for chunk in mic.generator():
-        print(chunk)
+        print("Processing filtered chunk...")
