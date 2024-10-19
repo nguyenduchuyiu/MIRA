@@ -1,14 +1,11 @@
 import time
 import cv2
-import random
 from audio_processing.asr import ASR
 from reasoning_engine.nlu import NLU
-from audio_processing.tts import TextToSpeech
+from response_generation.tts import TextToSpeech
+from response_generation.gtts import GTextToSpeech
 from visual_processing.vision import VisionProcessing
 
-RECORD_DURATION = 3
-
-image = None
 
 def record_video(duration, fps=30):
     cap = cv2.VideoCapture(0)
@@ -51,15 +48,18 @@ def record_video(duration, fps=30):
 
 
 if __name__ == "__main__":
+    RECORD_DURATION = 3
+    image = None
     nlu = NLU()
     tts = TextToSpeech()
+    gtts = GTextToSpeech()
     vision_processing = VisionProcessing()
     asr_thread = ASR()
     
     while True:
-        # transcript = asr_thread.start()
+        transcript = asr_thread.start()
         
-        transcript = input("Please enter the transcript: ")
+        # transcript = input("Please enter the transcript: ")
         
         if ("can" in transcript.lower() and "see" in transcript.lower()):
             print("Let me see")
@@ -82,7 +82,8 @@ if __name__ == "__main__":
         response = nlu.process(transcript, image)
         print(f"Mira Response: {response}")
         
-        # tts.synthesize(response) #FIXME: Uncomment this
+        tts.synthesize(response) #FIXME: Uncomment this
+        # gtts.synthesize(response)
         
         # Reset
         image = None

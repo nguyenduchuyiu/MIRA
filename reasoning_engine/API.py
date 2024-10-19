@@ -34,7 +34,7 @@ class GeminiAPI:
         self.model = genai.GenerativeModel(
             model_name=model_name,
             generation_config=self.generation_config,
-            system_instruction="You are MIRA, a personal female assistant. Answer concisely"
+            system_instruction="You are MIRA, a personal female assistant. Answer concisely. Don't add Mira or User before the response."
         )
 
     def generate_response(self, prompt, image=None):

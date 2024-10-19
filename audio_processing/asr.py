@@ -25,7 +25,7 @@ class ASR:
                     self.total_transcript += transcript + " "
         except Exception as e:
             print(f"Error processing responses: {str(e)}")
-
+ 
     def start(self):
         """Begins streaming from the microphone to the Speech-to-Text API."""
         try:

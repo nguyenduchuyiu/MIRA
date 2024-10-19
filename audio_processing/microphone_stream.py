@@ -5,7 +5,7 @@ from six.moves import queue  # type: ignore
 import wave
 
 # Audio recording parameters
-RATE = 20000  # Sample rate (20 kHz)
+RATE = 16000  # Sample rate (20 kHz)
 CHUNK = int(RATE / 10)  # 100ms chunks
 SILENCE_THRESHOLD = 20  # Number of silent chunks before closing (2 seconds)
 
@@ -94,7 +94,7 @@ class MicrophoneStream:
             file.write(f"{normalized_energy}\n")
         
         # Adjusted threshold based on distribution analysis
-        return normalized_energy < 0.004  # Change threshold as necessary
+        return normalized_energy < 0.01  # Change threshold as necessary
 
 if __name__ == "__main__":
     mic = MicrophoneStream(RATE, CHUNK)

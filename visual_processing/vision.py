@@ -35,9 +35,3 @@ class VisionProcessing:
 
         # Release the video capture object
         cap.release()
-
-if __name__ == "__main__":
-    scenario_recognition = VisionProcessing()
-    scenario = scenario_recognition.analyze_image("resources/record_20241015-155123.avi")
-    print(scenario)
-    print(type(scenario))

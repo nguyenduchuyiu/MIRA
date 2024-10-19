@@ -1,53 +1,31 @@
 # MIRA - Multi-Modal Intelligent Response Assistant
 
 ## Overview
-MIRA is an intelligent assistant designed to process real-time audio and visual inputs, understand natural language, and generate appropriate responses. It integrates advanced technologies for speech recognition, computer vision, and natural language understanding to provide a seamless user experience.
+MIRA is an intelligent assistant that processes real-time audio and visual inputs, utilizing advanced technologies for speech recognition, computer vision, and natural language understanding.
 
 ## Core Functionalities
-- **Audio Input Capture**: 
-  - Real-time audio capture and processing.
-  - Speech-to-text conversion using Google Speech-to-Text or Mozilla DeepSpeech.
-  - Continuous listening with wake word "Hey MIRA".
-  - Handles multiple audio sources and noise reduction.
-
-- **Visual Input Capture**:
-  - Real-time video/image capture.
-  - Object/face detection and optional OCR using Tesseract.
-  - Handles multiple visual streams with OpenCV.
-
-- **Data Processing**:
-  - Natural Language Understanding (NLU) for audio inputs.
-  - Computer vision models for visual data.
-  - Contextual awareness in multi-turn conversations.
-  - Error handling for ambiguous input.
-
-- **Response Generation**:
-  - Generate responses through speech (gTTS), text, or visual feedback.
-  - Integrate with external APIs like GPT API for advanced reasoning.
-  - Provide feedback on action success/failure.
+- **Audio Input**: Real-time capture, speech-to-text conversion and noise reduction.
+- **Visual Input**: Real-time video/image capture, object/face detection, and OCR.
+- **Data Processing**: NLU for audio, computer vision for visuals, contextual awareness, and error handling.
+- **Response Generation**: Responses via speech, text, or visual feedback, with integration to external APIs for advanced reasoning.
 
 ## Architecture
-MIRA is built with a modular architecture, consisting of the following modules:
-- **Audio Processing Module**
-- **Visual Processing Module**
-- **Reasoning Engine Module**
-- **Response Generation Module**
-- **Database Module**
+MIRA features a modular design with:
+- Audio Processing Module
+- Visual Processing Module
+- Reasoning Engine Module
+- Response Generation Module
+- Database Module
 
 ## Technology Stack
 - **Primary Language**: Python
-- **Optional Languages**: C++ (for performance-critical components), JavaScript/HTML/CSS (for web-based UI)
-- **Libraries**: 
-  - SpeechRecognition, PyAudio, gTTS
-  - OpenCV, Tesseract OCR
-  - GPT API, spaCy/NLTK
-  - SQLite, FastAPI/Flask
-  - Tkinter or Electron.js
+- **Optional**: C++, JavaScript/HTML/CSS
+- **Libraries**: SpeechRecognition, PyAudio, gTTS, OpenCV, SQLite, FastAPI/Flask.
 
 ## Getting Started
 ### Prerequisites
-- Python 3.x
-- Required Python libraries (see `requirements.txt`)
+- Python 3.10.12
+- Required libraries (see `requirements.txt`)
 
 ### Installation
 1. Clone the repository:
@@ -56,23 +34,38 @@ MIRA is built with a modular architecture, consisting of the following modules:
    cd mira
    ```
 
-2. Install the required libraries:
+2. Install libraries:
    ```bash
    pip install -r requirements.txt
    ```
+## API Setup
 
-### Running MIRA
-- To start the application, run:
+### Google Speech-to-Text
+1. **Create a Google Cloud Project** and enable the Speech-to-Text API.
+2. **Create Service Account Credentials** and download the JSON key file.
+3. **Set the environment variable:**
+   ```bash
+   export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account-file.json"
+   ```
+
+### Gemini API
+1. **Obtain your API key** from the Gemini API provider.
+2. **Set up API in your environment:**
   ```bash
-  python main.py
+  export API_KEY="your_gemini_api_key"
   ```
 
+### Running MIRA
+Start the application with:
+```bash
+python main.py
+```
+
 ## Contribution
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to contribute to this project.
+Contributions are welcome! Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Licensed under the MIT License - see [LICENSE](LICENSE) for details.
 
 ## Contact
-For any questions or feedback, please contact [nguyenduchuyiu@gmail.com](mailto:nguyenduchuyiu@gmail.com).
-
+For questions or feedback, contact [nguyenduchuyiu@gmail.com](mailto:nguyenduchuyiu@gmail.com).
