@@ -4,6 +4,7 @@ from google.generativeai import caching
 from google.generativeai.types import GenerationConfig
 from dotenv import load_dotenv
 
+
 # Load environment variables from .env file
 load_dotenv()
 
@@ -20,7 +21,7 @@ class GeminiAPI:
         # Initialize the model
         self.initialize_model()
 
-    def initialize_model(self, model_name='tunedModels/mira-x3tf6an2hchl', cache_ttl=2):
+    def initialize_model(self, model_name='models/gemini-1.5-flash-001'):
         # Set up the generation config
         self.generation_config = GenerationConfig(
             temperature=0.9,
@@ -32,32 +33,23 @@ class GeminiAPI:
         # Initialize the model
         self.model = genai.GenerativeModel(
             model_name=model_name,
-            generation_config=self.generation_config
+            generation_config=self.generation_config,
+            system_instruction="You are MIRA, a personal female assistant. Answer concisely"
         )
 
-    def generate_response(self, prompt, scenario=''):
-        # Add the user's question to the buffer
-        self.content_buffer.append(f"User: {prompt}")
+    def generate_response(self, prompt, image=None):
+        # Include the content buffer in the prompt
+        self.append_content_buffer(prompt=prompt, image=image)
 
-        prompt = f'{prompt}. Image: {scenario}'
-        
-        # Generate the response
-        response = self.model.generate_content(prompt)
-        
-        # Extract the text from the response
-        response_text = response.text
+        full_prompt = "\n".join(self.content_buffer) + f"\nUser: {prompt}"
+        prompt_list = [full_prompt] + ([image] if image is not None else [])
+        print(f"prompt_list: {prompt_list}")
+        response = self.model.generate_content(prompt_list)
 
         # Add the model's response to the buffer
-        self.content_buffer.append(f"MIRA: {response_text}")
+        self.append_content_buffer(response_text=response.text)
 
-        # Save the content buffer to a file if it's large
-        # Check if the total token count exceeds the minimum threshold
-        self.append_content_buffer()
-
-        # Get token usage metadata
-        usage_metadata = response.prompt_feedback
-
-        return response_text, usage_metadata
+        return response.text, response.prompt_feedback
 
     def reset_cache(self):
         # Reinitialize the model to reset the cache
@@ -65,11 +57,31 @@ class GeminiAPI:
         # Clear the buffer
         self.content_buffer.clear()
 
-    def append_content_buffer(self):
-        # Save the content buffer to a file
-        with open('resources/content_buffer.txt', 'a') as file:
-            file.write('\n'.join(self.content_buffer))
-            file.write('\n')
+    def append_content_buffer(self, prompt=None, image=None, response_text=None):
+        entries_to_write = []  # List to hold entries for writing
+
+        # Build the conversation buffer
+        if prompt is not None:
+            entry = f"User: {prompt}"
+            self.content_buffer.append(entry)
+            entries_to_write.append(entry)
+        if image is not None:
+            entry = f"Image: {image}"
+            self.content_buffer.append(entry)
+            entries_to_write.append(entry)
+        if response_text is not None:
+            entry = f"Mira: {response_text}"
+            self.content_buffer.append(entry)
+            entries_to_write.append(entry)
+
+        # Limit the content buffer to the most recent 30 entries
+        if len(self.content_buffer) > 30:  # 10 user prompts + 10 images + 10 responses
+            self.content_buffer.pop(0)  # Remove the oldest entry
+
+        # Write to the file only if there are new entries
+        if entries_to_write:
+            with open('resources/content_buffer.txt', 'a') as file:
+                file.write('\n'.join(entries_to_write) + '\n')
 
     def load_content_buffer(self):
         # Load the content buffer from a file
@@ -77,16 +89,5 @@ class GeminiAPI:
             self.content_buffer = file.readlines()
 
 
-if __name__ == "__main__":
-    # Create an instance of the class
-    mira = GeminiAPI()  # Assuming the class name is MIRA
-    
-    # Test the generate_response method
-    test_prompt = "What is the capital of France?"
-    test_scenario = "Provide a brief description."
-    response_text, usage_metadata = mira.generate_response(test_prompt, test_scenario)
-    
-    # Print the response and metadata
-    print("Response:", response_text)
-    print("Usage Metadata:", usage_metadata)
+
 

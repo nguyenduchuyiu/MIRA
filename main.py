@@ -4,11 +4,11 @@ import random
 from audio_processing.asr import ASR
 from reasoning_engine.nlu import NLU
 from audio_processing.tts import TextToSpeech
-from visual_processing.scenario_recognition import ScenarioRecognition
+from visual_processing.vision import VisionProcessing
 
 RECORD_DURATION = 3
 
-scenario = ""
+image = None
 
 def record_video(duration, fps=30):
     cap = cv2.VideoCapture(0)
@@ -18,10 +18,10 @@ def record_video(duration, fps=30):
 
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     current_time = time.strftime("%Y%m%d-%H%M%S")
-    video_name = f"record_{current_time}.avi"
+    video_name = f"resources/videos/record_{current_time}.avi"
     out = cv2.VideoWriter(video_name, fourcc, fps, (640, 480))
 
-    start_time = time.time()
+    start_time = time.time()  # Start timing
     frame_count = 0
 
     while (time.time() - start_time) < duration:
@@ -40,41 +40,30 @@ def record_video(duration, fps=30):
     out.release()
     cv2.destroyAllWindows()
 
-    elapsed_time = time.time() - start_time
+    elapsed_time = time.time() - start_time  # End timing
     recorded_fps = frame_count / elapsed_time
     print(f"Total frames: {frame_count}")
     print(f"Elapsed time: {elapsed_time:.2f} seconds")
     print(f"Recorded FPS: {recorded_fps:.2f}")
+    print(f"Video recording time: {elapsed_time:.2f} seconds")
 
     return video_name
 
 
-
-def greet():
-    greetings = [
-        "What's the question that you want to ask?",
-        "Can you tell me what you want to know?",
-        "Are there any questions that you want to ask?",
-        "Feel free to ask me anything!"
-    ]
-    chosen_greeting = random.choice(greetings)
-    print(chosen_greeting)
-    tts.synthesize(chosen_greeting)
-    
-
 if __name__ == "__main__":
     nlu = NLU()
     tts = TextToSpeech()
-    scenario_recognition = ScenarioRecognition()
+    vision_processing = VisionProcessing()
     asr_thread = ASR()
     
     while True:
-        transcript = asr_thread.start()
-        #transcript = input("Please enter the transcript: ")
+        # transcript = asr_thread.start()
+        
+        transcript = input("Please enter the transcript: ")
         
         if ("can" in transcript.lower() and "see" in transcript.lower()):
             print("Let me see")
-            tts.synthesize("Let me see") #FIXME: Uncomment this
+            # tts.synthesize("Let me see") #FIXME: Uncomment this
             video_path = record_video(duration=RECORD_DURATION)  # Record for 3 seconds
             
             if video_path is None:
@@ -82,20 +71,20 @@ if __name__ == "__main__":
                 # tts.synthesize("Video recording failed.") #FIXME: Uncomment this
                 continue
         
-            scenario = scenario_recognition.analyze_image(video_path)
+            image = vision_processing.analyze_image(video_path)
         
         elif ("i have no questions" in transcript.lower()):
             print("OK, Ask me anything if you want!")
-            tts.synthesize("OK, Ask me anything if you want!") #FIXME: Uncomment this
+            # tts.synthesize("OK, Ask me anything if you want!") #FIXME: Uncomment this
             exit()
         
-
-        
-        response = nlu.process(transcript, scenario)
+        print(f"image : {image}" )
+        response = nlu.process(transcript, image)
         print(f"Mira Response: {response}")
         
-        tts.synthesize(response) #FIXME: Uncomment this
+        # tts.synthesize(response) #FIXME: Uncomment this
         
+        # Reset
+        image = None
         asr_thread.reset_transcript()
-        
-        break #FIXME: Uncomment this
+        # break
