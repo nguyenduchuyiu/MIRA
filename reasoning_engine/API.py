@@ -45,7 +45,6 @@ class GeminiAPI:
         prompt_list = [full_prompt] + ([image] if image is not None else [])
         print(f"prompt_list: {prompt_list}")
         response = self.model.generate_content(prompt_list)
-
         # Add the model's response to the buffer
         self.append_content_buffer(response_text=response.text)
 

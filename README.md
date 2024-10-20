@@ -1,4 +1,4 @@
-# MIRA - Multi-Modal Intelligent Response Assistant
+# MIRA - Maybe Intelligent, Rather Adequate
 
 ## Overview
 MIRA is an intelligent assistant that processes real-time audio and visual inputs, utilizing advanced technologies for speech recognition, computer vision, and natural language understanding.

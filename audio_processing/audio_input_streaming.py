@@ -38,13 +38,27 @@ class MicrophoneStream:
             rate=self._rate,
             input=True,
             frames_per_buffer=self._chunk,
-            stream_callback=self._fill_buffer,
+            stream_callback=self.audio_callback,
         )
+        
+    def start_streaming(self):
+        """Starts the audio stream and returns the stream object."""
+        self._audio_stream.start_stream()
+        return self._audio_stream
 
-    def _fill_buffer(self, in_data, frame_count, time_info, status_flags):
-        """Callback function that adds audio chunks to the buffer."""
-        self._buff.put(in_data)
-        return None, pyaudio.paContinue
+    def stop_streaming(self):
+        """Stops the audio stream."""
+        self._audio_stream.stop_stream()
+        self._audio_stream.close()
+        self.closed = True
+        self._buff.put(None)
+        self._audio_interface.terminate()
+
+    def audio_callback(self, in_data, frame_count, time_info, status):
+        """Callback for PyAudio to fetch audio data."""
+        if self.push_stream:
+            self.push_stream.write(in_data)
+        return (in_data, pyaudio.paContinue)
 
     def __enter__(self):
         self.closed = False

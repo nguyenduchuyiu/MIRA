@@ -1,6 +1,8 @@
 from .API import GeminiAPI
 import time
 from google.api_core.exceptions import InternalServerError
+import PIL.Image
+
 
 class NLU:
     def __init__(self):
@@ -8,11 +10,14 @@ class NLU:
         self.gemini_api = GeminiAPI()
         self.conversation_history = []
 
-    def process(self, text, scenario='', max_retries=3, retry_delay=1):
+    def process(self, text, image_path='', max_retries=3, retry_delay=1):
         for attempt in range(max_retries):
             try:
                 # Generate response using the GeminiAPI
-                response, usage_metadata = self.gemini_api.generate_response(text, scenario)
+                image = None
+                if image_path != 'resources/':
+                    image = PIL.Image.open(image_path) 
+                response, usage_metadata = self.gemini_api.generate_response(text, image)
                 # Log token usage for monitoring
                 print(f"Token usage: {usage_metadata}")
                 

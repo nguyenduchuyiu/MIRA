@@ -1,4 +1,3 @@
-import PIL.Image
 import cv2
 
 class VisionProcessing:
@@ -8,7 +7,7 @@ class VisionProcessing:
     
     def analyze_image(self, video_path):
         image_path = self.extract_final_frame(video_path)
-        return PIL.Image.open(image_path)
+        return image_path
         
         
     def extract_final_frame(self, video_path):
@@ -27,8 +26,8 @@ class VisionProcessing:
         # Check if the last frame was read successfully
         if ret:
             # Save the last frame as an image
-            image_path = f'resources/images/{video_path.split("/")[-1].replace(".avi", ".jpg")}'  # Extract the last part of the video path and change the extension
-            cv2.imwrite(image_path, frame)
+            image_path = f'images/{video_path.split("/")[-1].replace(".avi", ".jpg")}'  # Extract the last part of the video path and change the extension
+            cv2.imwrite(f'resources/{image_path}', frame)
             return image_path
         else:
             print("Error: Could not read the last frame.")

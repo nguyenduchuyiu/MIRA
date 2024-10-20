@@ -5,6 +5,9 @@ from reasoning_engine.nlu import NLU
 from response_generation.tts import TextToSpeech
 from response_generation.gtts import GTextToSpeech
 from visual_processing.vision import VisionProcessing
+from audio_processing.speech_to_text import SpeechToText
+
+
 
 
 def record_video(duration, fps=30):
@@ -49,15 +52,17 @@ def record_video(duration, fps=30):
 
 if __name__ == "__main__":
     RECORD_DURATION = 3
-    image = None
+    image_path = ''
     nlu = NLU()
-    tts = TextToSpeech()
+    # tts = TextToSpeech()
     gtts = GTextToSpeech()
     vision_processing = VisionProcessing()
-    asr_thread = ASR()
+    # asr_thread = ASR()
+    speech_to_text = SpeechToText()
     
     while True:
-        transcript = asr_thread.start()
+        # transcript = asr_thread.start()
+        transcript = speech_to_text.start() 
         
         # transcript = input("Please enter the transcript: ")
         
@@ -71,21 +76,20 @@ if __name__ == "__main__":
                 # tts.synthesize("Video recording failed.") #FIXME: Uncomment this
                 continue
         
-            image = vision_processing.analyze_image(video_path)
+            image_path = vision_processing.analyze_image(video_path)
         
         elif ("i have no questions" in transcript.lower()):
             print("OK, Ask me anything if you want!")
             # tts.synthesize("OK, Ask me anything if you want!") #FIXME: Uncomment this
             exit()
         
-        print(f"image : {image}" )
-        response = nlu.process(transcript, image)
+        response = nlu.process(transcript, f'resources/{image_path}')
         print(f"Mira Response: {response}")
         
-        tts.synthesize(response) #FIXME: Uncomment this
-        # gtts.synthesize(response)
-        
+        # tts.synthesize(response) #FIXME: Uncomment this
+        gtts.synthesize(response)
         # Reset
-        image = None
-        asr_thread.reset_transcript()
+        image_path = ''
+        speech_to_text.reset_transcript()
+        # asr_thread.reset_transcript()
         # break
