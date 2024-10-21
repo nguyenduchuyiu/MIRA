@@ -81,11 +81,9 @@ class SpeechToText:
             self.speech_recognizer.stop_continuous_recognition()
             self.push_stream.close()
             
-
-        return self.total_transcript
-    
-    def reset_transcript(self):
+        temp_total_transcript = self.total_transcript
         self.total_transcript = ""
+        return temp_total_transcript
 
 if __name__ == "__main__":
     stt = SpeechToText()

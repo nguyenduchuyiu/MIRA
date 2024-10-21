@@ -4,30 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MIRA AI Interface</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
     <h1>MIRA AI Interface</h1>
-    <button onclick="startListening()">Start Listening</button>
-    <p id="response">MIRA's response will appear here...</p>
+
+    <!-- Display the video feed -->
+    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+
+    <!-- Buttons to take picture and start listening -->
+    <div>
+        <button onclick="takePicture()">Take Picture</button>
+        <button onclick="startListening()">Start Listening</button>
+    </div>
+
+    <!-- Display MIRA's response and any image result -->
+    <p id="chat">MIRA's response will appear here...</p>
     <div id="image-container"></div>
 
-    <script>
-        function startListening() {
-            fetch('/process', { method: 'POST' })
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('response').innerText = data.response;
-                    if (data.image_path) {
-                        const img = document.createElement('img');
-                        img.src = `/resources/${data.image_path}`;
-                        img.width = 400;
-                        img.height = 300;
-                        document.getElementById('image-container').appendChild(img);
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-    </script>
+    <script src="{{ url_for('static', filename='scripts.js') }}"></script> <!-- Link to the external JavaScript file -->
 </body>
 </html>

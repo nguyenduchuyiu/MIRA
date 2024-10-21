@@ -8,8 +8,6 @@ from visual_processing.vision import VisionProcessing
 from audio_processing.speech_to_text import SpeechToText
 
 
-
-
 def record_video(duration, fps=30):
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
@@ -90,6 +88,5 @@ if __name__ == "__main__":
         gtts.synthesize(response)
         # Reset
         image_path = ''
-        speech_to_text.reset_transcript()
         # asr_thread.reset_transcript()
         # break

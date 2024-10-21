@@ -41,7 +41,7 @@ class GeminiAPI:
         # Include the content buffer in the prompt
         self.append_content_buffer(prompt=prompt, image=image)
 
-        full_prompt = "\n".join(self.content_buffer) + f"\nUser: {prompt}"
+        full_prompt = "\n".join(self.content_buffer)
         prompt_list = [full_prompt] + ([image] if image is not None else [])
         print(f"prompt_list: {prompt_list}")
         response = self.model.generate_content(prompt_list)
@@ -62,10 +62,6 @@ class GeminiAPI:
         # Build the conversation buffer
         if prompt is not None:
             entry = f"User: {prompt}"
-            self.content_buffer.append(entry)
-            entries_to_write.append(entry)
-        if image is not None:
-            entry = f"Image: {image}"
             self.content_buffer.append(entry)
             entries_to_write.append(entry)
         if response_text is not None:

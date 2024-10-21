@@ -10,7 +10,7 @@ class NLU:
         self.gemini_api = GeminiAPI()
         self.conversation_history = []
 
-    def process(self, text, image_path='', max_retries=3, retry_delay=1):
+    def process(self, text, image_path='resources/', max_retries=3, retry_delay=1):
         for attempt in range(max_retries):
             try:
                 # Generate response using the GeminiAPI
