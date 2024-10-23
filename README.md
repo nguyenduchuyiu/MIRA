@@ -40,12 +40,11 @@ MIRA features a modular design with:
    ```
 ## API Setup
 
-### Google Speech-to-Text
-1. **Create a Google Cloud Project** and enable the Speech-to-Text API.
-2. **Create Service Account Credentials** and download the JSON key file.
-3. **Set the environment variable:**
+### Azure Speech-to-Text
+1. **Create a Azure Speech Service** and enable the Speech-to-Text API.
+2. **Set the environment variable:**
    ```bash
-   export GOOGLE_APPLICATION_CREDENTIALS="/path/to/your/service-account-file.json"
+   export AZURE_SPEECH_KEY="your-api-key"
    ```
 
 ### Gemini API
@@ -58,8 +57,9 @@ MIRA features a modular design with:
 ### Running MIRA
 Start the application with:
 ```bash
-python main.py
+python3 app.py
 ```
+Open http://127.0.0.1:5000/ in browser.
 
 ## Contribution
 Contributions are welcome! Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
