@@ -252,3 +252,12 @@
     border-radius: 20px;  /* Match the container's border-radius */
     display: block;  /* Removes any unwanted spacing */
 }
+
+#recognized-text {
+    border: 1px solid #444;
+    padding: 10px;
+    border-radius: 5px;
+    width: 60%;
+    margin: 0 auto;
+    font-size: 20px;
+}   

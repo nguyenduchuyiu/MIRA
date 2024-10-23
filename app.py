@@ -2,12 +2,16 @@ from imutils.video import VideoStream
 from flask import Response, jsonify, request
 from flask import Flask
 from flask import render_template
+from flask_socketio import SocketIO, emit
+import azure.cognitiveservices.speech as speechsdk
+
 import threading
 import datetime
 import imutils
 import time
 import cv2
 import os
+
 from audio_processing.speech_to_text import SpeechToText
 from reasoning_engine.nlu import NLU
 from response_generation.gtts import GTextToSpeech
@@ -24,15 +28,25 @@ outputFrame = None
 lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
-# initialize the video stream and allow the camera sensor to warmup
+socketio = SocketIO(app, cors_allowed_origins="*") 
+
+# initialize 
 vs = VideoStream(src=0).start()
 time.sleep(2.0)
 nlu = NLU()
 gtts = GTextToSpeech()
 tts = TextToSpeech()
 vision_processing = VisionProcessing()
-speech_to_text = SpeechToText()
+# Create speech config and recognizer globally
+speech_config = speechsdk.SpeechConfig(
+    subscription=os.environ.get("AZURE_SPEECH_KEY"),  
+    region=os.environ.get("AZURE_REGION"))
 
+audio_config = speechsdk.audio.AudioConfig(use_default_microphone=True)
+speech_recognizer = speechsdk.SpeechRecognizer(
+    speech_config=speech_config, 
+    audio_config=audio_config
+)
 
 
 @app.route("/")
@@ -112,10 +126,10 @@ def capture_image():
 
 
 
-@app.route("/record_audio")
-def record_audio():
-    transcript = speech_to_text.start()
-    return jsonify({"transcript": transcript}), 200
+# @app.route("/record_audio")
+# def record_audio():
+#     transcript = speech_to_text.start()
+#     return jsonify({"transcript": transcript}), 200
 
 
 
@@ -138,6 +152,72 @@ def synthesize_voice():
     else:
         return jsonify({"error": "No text provided!"}), 400
     
+    
+    
+# Flag to track recognition status
+is_recognizing = False
+
+@app.route('/record_audio')
+def record_audio():
+    """Start recording when this endpoint is called."""
+    global is_recognizing
+    if not is_recognizing:
+        is_recognizing = True
+        socketio.start_background_task(recognize_speech)
+        return jsonify({"status": "Recording started"})
+    return jsonify({"status": "Already recording"})
+
+def recognize_speech():
+    """Handle continuous speech recognition."""
+    global speech_recognizer, is_recognizing
+    
+    def on_recognizing(evt):
+        """Handler for intermediate recognition results."""
+        socketio.emit('recognizing', {'text': evt.result.text})
+
+    def on_recognized(evt):
+        """Handler for final recognition results."""
+        if evt.result.reason == speechsdk.ResultReason.RecognizedSpeech:
+            socketio.emit('recognized', {'text': evt.result.text})
+
+    def on_canceled(evt):
+        """Handler for recognition cancellation."""
+        global is_recognizing
+        is_recognizing = False
+        print(f"Speech recognition canceled: {evt.reason}")
+        if evt.reason == speechsdk.CancellationReason.Error:
+            print(f"Error details: {evt.error_details}")
+
+    # Connect event handlers
+    speech_recognizer.recognizing.connect(on_recognizing)
+    speech_recognizer.recognized.connect(on_recognized)
+    speech_recognizer.canceled.connect(on_canceled)
+    
+    # Start recognition
+    speech_recognizer.start_continuous_recognition()
+
+@app.route('/stop_recording')
+def stop_recording():
+    """Stop the recording process."""
+    global is_recognizing
+    if is_recognizing:
+        speech_recognizer.stop_continuous_recognition()
+        is_recognizing = False
+        return jsonify({"status": "Recording stopped"})
+    return jsonify({"status": "Not recording"})
+
+@socketio.on('connect')
+def handle_connect():
+    print("Client connected")
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    global is_recognizing
+    if is_recognizing:
+        speech_recognizer.stop_continuous_recognition()
+        is_recognizing = False
+    print("Client disconnected")
+
 
 
 # check to see if this is the main thread of execution
@@ -146,11 +226,12 @@ if __name__ == '__main__':
 	t = threading.Thread(target=detect_motion)
 	t.daemon = True
 	t.start()
-	# start the flask app
 	try:
-		app.run(debug=True, threaded=True, use_reloader=False)
-	except:
-		print(f"Error starting the app")
+		# start the flask app
+		socketio.run(app, use_reloader=False, debug=True)
+		# app.run(host='0.0.0.0', port=5000, debug=True)
+	except Exception as e:
+		print(f"Error starting the app: {e}")
 	finally:
 		# release the video stream pointer
 		vs.stop()

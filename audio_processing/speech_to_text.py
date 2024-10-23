@@ -14,9 +14,16 @@ class SpeechToText:
         self.speech_key = os.getenv('AZURE_SPEECH_KEY')
         self.service_region = os.getenv('AZURE_REGION')  # e.g., "eastus"
         self.total_transcript = ""
-        self.push_stream = None
-        self.audio_config = None
-        self.speech_recognizer = None
+        # Create a push stream
+        self.push_stream = speechsdk.audio.PushAudioInputStream()
+        self.audio_config = speechsdk.audio.AudioConfig(stream=self.push_stream)
+        # Create a recognizer
+        self.speech_config = speechsdk.SpeechConfig(subscription=self.speech_key, 
+                                               region=self.service_region,
+                                               speech_recognition_language="en-US",)
+        self.speech_recognizer = speechsdk.SpeechRecognizer(speech_config=self.speech_config, audio_config=self.audio_config)
+
+
 
     def process_recognition_result(self, evt):
         """Processes the recognized speech result."""
@@ -34,17 +41,7 @@ class SpeechToText:
         return (in_data, pyaudio.paContinue)
 
     def start(self):
-        """Begins streaming from the microphone to the Azure Speech-to-Text API."""
-        speech_config = speechsdk.SpeechConfig(subscription=self.speech_key, 
-                                               region=self.service_region,
-                                               speech_recognition_language="en-US",)
-        
-        # Create a push stream
-        self.push_stream = speechsdk.audio.PushAudioInputStream()
-        self.audio_config = speechsdk.audio.AudioConfig(stream=self.push_stream)
-
         # Create a speech recognizer
-        self.speech_recognizer = speechsdk.SpeechRecognizer(speech_config=speech_config, audio_config=self.audio_config)
         self.speech_recognizer.recognized.connect(self.process_recognition_result)
 
         # Start continuous recognition

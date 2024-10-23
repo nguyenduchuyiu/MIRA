@@ -36,6 +36,7 @@
 			</button>	
 
             <b class="chat" id="chat">What can I help with?</b>
+            <div id="recognized-text">Waiting for speech...</div>
 		</div>
 
 		
@@ -45,7 +46,7 @@
 		<b class="welcome-to">Welcome to</b>
 		<b class="-mira">MIRA</b>
   	</div>
-
+      <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 	<script src="{{ url_for('static', filename='scripts.js') }}"></script> 
 </body>
 </html>

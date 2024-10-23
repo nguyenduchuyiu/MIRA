@@ -1,87 +1,194 @@
-// Function to take a picture via API
+// Socket connection with error handling
+const socket = io('http://localhost:5000', {
+    transports: ['websocket'],
+    cors: {
+        origin: "http://localhost:5000"
+    },
+    reconnection: true,
+    reconnectionAttempts: 5,
+    reconnectionDelay: 1000
+});
+
+// DOM Elements
+const recognizedText = document.getElementById('recognized-text');
+const chatElement = document.getElementById('chat');
+const statusElement = document.getElementById('status'); // Add this element to your HTML
+const startButton = document.getElementById('startButton'); // Add this element to your HTML
+const stopButton = document.getElementById('stopButton');  // Add this element to your HTML
+
+// State management
+let isListening = false;
 let transcript = "";
 let imagePath = "resources/";
 
-function takePicture() {
-    fetch('/take_picture')
-        .then(response => {
-            if (response.ok) {
-                alert('Picture taken and saved!');
-            } else {
-                alert('Failed to take picture.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error taking picture.');
-        });
+// Socket event handlers
+socket.on('connect', () => {
+    console.log('Connected to server');
+    updateStatus('Connected');
+    enableControls(true);
+});
+
+socket.on('disconnect', () => {
+    console.log('Disconnected from server');
+    updateStatus('Disconnected');
+    enableControls(false);
+    isListening = false;
+    updateButtonState();
+});
+
+socket.on('connect_error', (error) => {
+    console.error('Connection error:', error);
+    updateStatus('Connection Error');
+    enableControls(false);
+});
+
+socket.on('recognizing', (data) => {
+    console.log('Interim:', data.text);
+    if (recognizedText) {
+        recognizedText.innerText = data.text;
+    }
+});
+
+socket.on('recognized', (data) => {
+    console.log('Final:', data.text);
+    transcript = data.text;
+    updateChat(transcript);
+    processTranscriptWithImage(transcript);
+});
+
+// Main control functions
+async function startListening() {
+    if (isListening) {
+        console.log('Already listening');
+        return;
+    }
+
+    try {
+        const response = await fetch('/record_audio');
+        const data = await response.json();
+        
+        if (data.status === "Recording started") {
+            isListening = true;
+            updateStatus('Listening...');
+            updateButtonState();
+            console.log('Recording started successfully');
+        } else {
+            console.log(data.status);
+        }
+    } catch (error) {
+        console.error("Error starting recording:", error);
+        updateStatus('Error starting recording');
+    }
 }
 
-// Function to start listening for MIRA's response
-function startListening() {
-    return fetch('/record_audio', { method: 'GET' })
-        .then(response => response.json())
-        .then(data => {
-            // Display MIRA's response text
-            var transcript = data.transcript;
-            updateChat(transcript);
-            // Check if "see now" is in the response
-            if (data.transcript.toLowerCase().includes("see")) {
-                console.log("'See' detected, attempting to capture image");
-                return fetch('/capture_image', { method: 'GET' })
-                    .then(response => {
-                        console.log("Received response from /capture_image");
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(capturedData => {
-                        console.log("Parsed JSON response:", capturedData);
-                        imagePath = capturedData.image_path; // Update imagePath
-                        console.log("Updated imagePath:", imagePath);
-                        
-                        // Now proceed to the /reasoning fetch
-                        return fetch(`/reasoning?transcript=${encodeURIComponent(transcript)}&image_path=${encodeURIComponent(imagePath)}`, { method: 'GET' });
-                    })
-                    .then(response => {
-                        return response.json();
-                    })
-                    .then(data => {
-                        document.getElementById('chat').innerText = data.response;
-                        return fetch(`/synthesize_voice?text=${encodeURIComponent(data.response)}`, { method: 'GET' });
-                    })
-                    .then(synthResponse => {
-                        if (!synthResponse.ok) {
-                            throw new Error('Failed to synthesize voice.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error("Error in process:", error);
-                    });
-            } else {
-                return fetch(`/reasoning?transcript=${encodeURIComponent(transcript)}&image_path=${encodeURIComponent("resources/")}`, { method: 'GET' })
-            .then(response => {
-                return response.json();
-            })
-            .then(data => {
-                document.getElementById('chat').innerText = data.response;
-                return fetch(`/synthesize_voice?text=${encodeURIComponent(data.response)}`, { method: 'GET' });
-            })
-            .then(synthResponse => {
-                if (!synthResponse.ok) {
-                    throw new Error('Failed to synthesize voice.');
-                }
-            })
-            .catch(error => {
-                console.error("Error in process:", error);
-            });
-            }
-        })
+async function stopListening() {
+    if (!isListening) {
+        console.log('Not currently listening');
+        return;
+    }
+
+    try {
+        const response = await fetch('/stop_recording');
+        const data = await response.json();
+        
+        if (data.status === "Recording stopped") {
+            isListening = false;
+            updateStatus('Stopped');
+            updateButtonState();
+            console.log('Recording stopped successfully');
+        }
+    } catch (error) {
+        console.error("Error stopping recording:", error);
+        updateStatus('Error stopping recording');
+    }
 }
 
-function updateChat(transcript) {
-    const chatElement = document.getElementById('chat');
-    chatElement.innerHTML += transcript + '<br>'; // Append new text with a line break
-    chatElement.scrollTop = chatElement.scrollHeight; // Scroll to the bottom
+// Image handling and transcript processing
+async function processTranscriptWithImage(transcript) {
+    try {
+        if (transcript.toLowerCase().includes("see")) {
+            console.log("'See' detected, capturing image...");
+            await captureAndProcessImage();
+        } else {
+            await processTranscript(transcript, imagePath);
+        }
+    } catch (error) {
+        console.error("Error processing transcript:", error);
+        updateStatus('Error processing transcript');
+    }
 }
+
+async function captureAndProcessImage() {
+    try {
+        const response = await fetch('/capture_image');
+        const capturedData = await response.json();
+        imagePath = capturedData.image_path;
+        console.log("Image captured:", imagePath);
+        await processTranscript(transcript, imagePath);
+    } catch (error) {
+        console.error("Error capturing image:", error);
+        updateStatus('Error capturing image');
+    }
+}
+
+async function processTranscript(transcript, imagePath) {
+    try {
+        // Process transcript
+        const reasoningResponse = await fetch(
+            `/reasoning?transcript=${encodeURIComponent(transcript)}&image_path=${encodeURIComponent(imagePath)}`
+        );
+        const reasoningData = await reasoningResponse.json();
+        
+        // Update chat with response
+        if (chatElement) {
+            chatElement.innerText = reasoningData.response;
+        }
+
+        // Synthesize voice
+        const synthResponse = await fetch(
+            `/synthesize_voice?text=${encodeURIComponent(reasoningData.response)}`
+        );
+        
+        if (!synthResponse.ok) {
+            throw new Error('Voice synthesis failed');
+        }
+    } catch (error) {
+        console.error("Error in transcript processing:", error);
+        updateStatus('Error processing response');
+    }
+}
+
+// UI update functions
+function updateChat(text) {
+    if (chatElement) {
+        const newMessage = document.createElement('div');
+        newMessage.className = 'chat-message';
+        newMessage.innerHTML = text;
+        chatElement.appendChild(newMessage);
+        chatElement.scrollTop = chatElement.scrollHeight;
+    }
+}
+
+function updateStatus(message) {
+    if (statusElement) {
+        statusElement.innerText = message;
+    }
+}
+
+function updateButtonState() {
+    if (startButton && stopButton) {
+        startButton.disabled = isListening;
+        stopButton.disabled = !isListening;
+    }
+}
+
+function enableControls(enabled) {
+    if (startButton && stopButton) {
+        startButton.disabled = !enabled;
+        stopButton.disabled = !enabled || !isListening;
+    }
+}
+
+// Initial setup
+updateButtonState();
+updateStatus('Ready');
