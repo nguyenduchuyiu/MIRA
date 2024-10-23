@@ -12,6 +12,9 @@ from audio_processing.speech_to_text import SpeechToText
 from reasoning_engine.nlu import NLU
 from response_generation.gtts import GTextToSpeech
 from visual_processing.vision import VisionProcessing
+from response_generation.tts import TextToSpeech
+
+
 
 
 # initialize the output frame and a lock used to ensure thread-safe
@@ -26,6 +29,7 @@ vs = VideoStream(src=0).start()
 time.sleep(2.0)
 nlu = NLU()
 gtts = GTextToSpeech()
+tts = TextToSpeech()
 vision_processing = VisionProcessing()
 speech_to_text = SpeechToText()
 
@@ -47,14 +51,12 @@ def detect_motion():
 		# read the next frame from the video stream, resize it,
 		# convert the frame to grayscale, and blur it   
 		frame = vs.read()
-		frame = imutils.resize(frame, width=400)
+		# Adjust the width and height for rendering
+		frame = imutils.resize(frame, width=800)  # Increased width
+		# Optionally, you can set height directly if needed
+		frame = imutils.resize(frame, height=500)  # Example for height adjustment
 		gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 		gray = cv2.GaussianBlur(gray, (7, 7), 0)
-		# grab the current timestamp and draw it on the frame
-		timestamp = datetime.datetime.now()
-		cv2.putText(frame, timestamp.strftime(
-			"%A %d %B %Y %I:%M:%S%p"), (10, frame.shape[0] - 10),
-			cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0, 0, 255), 1)
 		# acquire the lock, set the output frame, and release the
 		# lock
 		with lock:
@@ -130,7 +132,8 @@ def reasoning():
 def synthesize_voice():
     text = request.args.get('text', default='', type=str)
     if text:
-        gtts.synthesize(text)
+        # gtts.synthesize(text)
+        tts.synthesize(text)
         return jsonify({"message": "Voice synthesized successfully!"}), 200
     else:
         return jsonify({"error": "No text provided!"}), 400

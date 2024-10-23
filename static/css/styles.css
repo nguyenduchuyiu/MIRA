@@ -1,0 +1,254 @@
+    html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.d-chatbot-1-icon {
+    position: absolute;
+    top: 138px;
+    left: 7px;
+    width: 718px;
+    height: 500px;
+    object-fit: cover;
+}
+
+.main-child {
+    position: absolute;
+    top: 866px;
+    left: calc(50% - 1128px);
+    filter: blur(500px);
+    background-color: rgba(195, 129, 231, 0.6);
+    width: 2183px;
+    height: 165px;
+    overflow: hidden;
+    display: none;
+}
+.icon {
+    position: absolute;
+    top: 358px;
+    left: -172px;
+    width: 1181px;
+    height: 774px;
+    object-fit: cover;
+}
+.main-item {
+    position: absolute;
+    top: -594px;
+    left: -466.94px;
+    filter: blur(300px);
+    border-radius: 50%;
+    background: linear-gradient(127.34deg, rgba(0, 238, 255, 0.5), rgba(172, 21, 255, 0.5));
+    border: 1px solid #000;
+    box-sizing: border-box;
+    width: 1855px;
+    height: 1162.8px;
+    transform:  rotate(0.8deg);
+    transform-origin: 0 0;
+}
+.main-inner {
+    position: absolute;
+    top: 748px;
+    left: 556px;
+    filter: blur(200px);
+    border-radius: 50%;
+    background-color: #c381e7;
+    border: 1px solid #000;
+    box-sizing: border-box;
+    width: 346px;
+    height: 173px;
+    display: none;
+}
+.frame-child {
+    position: absolute;
+    top: 649px;
+    left: 233px;
+    width: 81px;
+    height: 81px;
+}
+.frame-item {
+    position: absolute;
+    top: 654px;
+    left: 238px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    background: linear-gradient(180deg, #d6d4ff, #4d01f1);
+    width: 71px;
+    height: 72px;
+}
+.chat-container {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 50%; /* Set a fixed height for scrolling */
+    overflow-y: auto; /* Enable vertical scrolling */
+    background: rgba(255, 255, 255, 0.8); /* Optional: background for better visibility */
+    border-radius: 10px; /* Optional: rounded corners */
+    padding: 10px; /* Optional: padding for better spacing */
+}
+
+.chat {
+    font-size: 30px;
+    line-height: 1.5; /* Adjust line height for better readability */
+    display: block; /* Change to block to allow stacking of text */
+    background: linear-gradient(90deg, #d96ff3, #6fdbf3 30%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.ezgif-5-1b3b6b74c0-1-icon {
+    position: absolute;
+    top: 670px;
+    left: 260px;
+    width: 30px;
+    height: 40px;
+    object-fit: cover;
+}
+.component-parent {
+    position: absolute;
+    top: 55%;
+    left:25%;
+    border-radius: 50px;
+    background-color: rgba(255, 255, 255, 0.15);
+    width: 50%;
+    height: 40%;
+    overflow: hidden;
+    font-size: 40px;
+}
+.sound-recognition-1-icon {
+    position: absolute;
+    top: 63px;
+    left: 83px;
+    width: 35px;
+    height: 27px;
+    object-fit: cover;
+    display: none;
+}
+.mira {
+    position: absolute;
+    top: 20px;
+    left: 50px;
+    font-size: 25px;
+    font-family: 'Inclusive Sans';
+    background: linear-gradient(90deg, #f5b6ff, #b032f5);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 105px;
+    height: 56px;
+    text-shadow: 1px 0 0 #f013d3, 0 1px 0 #f013d3, -1px 0 0 #f013d3, 0 -1px 0 #f013d3;
+}
+.main-child1 {
+    position: absolute;
+    top: 1142.06px;
+    left: -332px;
+    filter: blur(300px);
+    border-radius: 50%;
+    background: linear-gradient(127.34deg, rgba(0, 238, 255, 0.5), rgba(172, 21, 255, 0.5));
+    border: 1px solid #000;
+    box-sizing: border-box;
+    width: 587.6px;
+    height: 526.6px;
+    transform:  rotate(-35.5deg);
+    transform-origin: 0 0;
+}
+.welcome-to {
+    position: absolute;
+    top: 60px;
+    left: 65px;
+    /* font-size: 128px; */
+    font-size: 90px;
+    line-height: 154px;
+    display: inline-block;
+    background: linear-gradient(90deg, #d96ff3, #6fdbf3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: 790px;
+    height: 307px;
+}
+.-mira {
+    position: absolute;
+    top: 170px;
+    left: 65px;
+    /* font-size: 128px; */
+    font-size: 90px;
+    line-height: 154px;
+    display: inline-block;
+    background: linear-gradient(90deg, #d96ff3, #6fdbf3);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: 790px;
+    height: 307px;
+}
+.frame-inner {
+    position: absolute;
+    height: 67px;
+    width: 67px;
+    bottom: 5.46%;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 0px 16px rgba(146, 84, 222, 0.32);
+    border-radius: 50%;
+    background: linear-gradient(132.73deg, #af7ae9 36.5%, #7a38d4 62.5%);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ellipse-div {
+    position: absolute;
+    bottom: -1.5%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 50%;
+    background-color: #190b38;
+    width: 60px;
+    height: 60px;
+    z-index: 1; /* Ensure it stays above the frame-inner */
+}
+
+.microphone-1-icon {
+    position: absolute;
+    height: 30px; /* Fixed height instead of percentage */
+    width: 30px;  /* Fixed width instead of percentage */
+    bottom: 7%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+    object-fit: contain; /* Changed from cover to contain */
+    z-index: 2; /* Ensure it stays on top */
+}
+.main {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background-color: #010101;
+    height: 100vh;
+    text-align: left;
+    font-size: 24px;
+    color: #fff;
+    font-family: Akatab;
+}
+
+.video-feed {
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40%;
+    height: 40%;
+    border-radius: 20px;  /* Increased roundness */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    overflow: hidden;  /* This ensures the image doesn't overflow the rounded corners */
+}
+
+.video-feed img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;  /* This ensures the image fills the container properly */
+    border-radius: 20px;  /* Match the container's border-radius */
+    display: block;  /* Removes any unwanted spacing */
+}

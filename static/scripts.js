@@ -24,8 +24,7 @@ function startListening() {
         .then(data => {
             // Display MIRA's response text
             var transcript = data.transcript;
-            document.getElementById('chat').innerText = transcript;
-
+            updateChat(transcript);
             // Check if "see now" is in the response
             if (data.transcript.toLowerCase().includes("see")) {
                 console.log("'See' detected, attempting to capture image");
@@ -79,4 +78,10 @@ function startListening() {
             });
             }
         })
+}
+
+function updateChat(transcript) {
+    const chatElement = document.getElementById('chat');
+    chatElement.innerHTML += transcript + '<br>'; // Append new text with a line break
+    chatElement.scrollTop = chatElement.scrollHeight; // Scroll to the bottom
 }

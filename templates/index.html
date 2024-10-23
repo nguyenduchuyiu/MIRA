@@ -1,27 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIRA AI Interface</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  	<meta charset="utf-8">
+  	<meta name="viewport" content="initial-scale=1, width=device-width">
+  	
+  	<link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Akatab:wght@400;700&display=swap" />
+  	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inclusive Sans:wght@400&display=swap" />
+  	<title>MIRA</title>
+  	<link rel="icon" href="{{ url_for('static', filename='images/sound-recognition.png') }}" type="images/png">
+  	
 </head>
 <body>
-    <h1>MIRA AI Interface</h1>
+  	
+<div class="main">
+		<img class="d-chatbot-1-icon" alt="" src="{{ url_for('static', filename='images/_.gif') }}">
 
-    <!-- Display the video feed -->
-    <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+		<div class="main-child"></div>
+		<!-- 3D -->
+		<!-- <img class="icon" alt="" src="resources/image/abstractBall.gif"> -->
+		
+		<div class="main-item"></div>
+		<div class="main-inner"></div>
+		<div class="video-feed">
+			<img src="{{ url_for('video_feed') }}" alt="Video Feed">
+		</div>
+		<div class="component-parent">
+			<!-- <img class="frame-child" alt="" src="Ellipse 9.svg"> -->
+			<!-- <div class="frame-item"></div> -->
+			<div class="frame-inner" id="ellipse2"></div>
+			<div class="ellipse-div"></div>
+            
+			<button onclick="startListening()">
+                <img class="microphone-1-icon" alt="" src="{{ url_for('static', filename='images/microphone.png') }}">
+			</button>	
 
-    <!-- Buttons to take picture and start listening -->
-    <div>
-        <button onclick="takePicture()">Take Picture</button>
-        <button onclick="startListening()">Start Listening</button>
-    </div>
+            <b class="chat" id="chat">What can I help with?</b>
+		</div>
 
-    <!-- Display MIRA's response and any image result -->
-    <p id="chat">MIRA's response will appear here...</p>
-    <div id="image-container"></div>
+		
+		
+		<div class="mira">MIRA.</div>
+		<div class="main-child1"></div>
+		<b class="welcome-to">Welcome to</b>
+		<b class="-mira">MIRA</b>
+  	</div>
 
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script> <!-- Link to the external JavaScript file -->
+	<script src="{{ url_for('static', filename='scripts.js') }}"></script> 
 </body>
 </html>
