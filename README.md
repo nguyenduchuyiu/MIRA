@@ -65,6 +65,10 @@ python3 app.py
 ```
 Open http://127.0.0.1:5000/ in browser.
 
+Demo:
+![Alt text](demo.png)
+
+
 ## Contribution
 Contributions are welcome! Please refer to [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
