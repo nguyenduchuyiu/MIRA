@@ -14,11 +14,10 @@
 <body>
   	
 <div class="main">
-		<img class="d-chatbot-1-icon" alt="" src="{{ url_for('static', filename='images/_.gif') }}">
+		<div id="status" style="display: none;">;"></div>
+		<img class="mira-big-icon" alt="" src="{{ url_for('static', filename='images/mira-icon.gif') }}">
 
 		<div class="main-child"></div>
-		<!-- 3D -->
-		<!-- <img class="icon" alt="" src="resources/image/abstractBall.gif"> -->
 		
 		<div class="main-item"></div>
 		<div class="main-inner"></div>
@@ -26,17 +25,30 @@
 			<img src="{{ url_for('video_feed') }}" alt="Video Feed">
 		</div>
 		<div class="component-parent">
-			<!-- <img class="frame-child" alt="" src="Ellipse 9.svg"> -->
-			<!-- <div class="frame-item"></div> -->
-			<div class="frame-inner" id="ellipse2"></div>
-			<div class="ellipse-div"></div>
-            
-			<button onclick="startListening()">
-                <img class="microphone-1-icon" alt="" src="{{ url_for('static', filename='images/microphone.png') }}">
-			</button>	
 
-            <b class="chat" id="chat">What can I help with?</b>
-            <div id="recognized-text">Waiting for speech...</div>
+			<div class="state-icon">
+
+				<div class="microphoneIcon" id="microphoneIcon" onclick="startListening()">
+					<div class="inner-ellipse">
+						<button id="micIcon" class="micIcon">
+							<img src="{{ url_for('static', filename='images/microphone.png') }}" alt="Microphone Icon" />
+						</button>
+					</div>
+				</div>
+
+				<img id="listening-icon" class="listening-icon" alt="" 
+					src="{{ url_for('static', filename='images/listening-icon.gif') }}" >
+
+				<img id="mira-icon" class="mira-icon" alt="" 
+					src="{{ url_for('static', filename='images/voice.png') }}">
+
+			</div>
+    
+			<div class="chat-container">
+				<div id="mira-chat">How can I help you?</div>
+				<div id="recognized-text">Waiting for input...</div>	
+			</div>
+
 		</div>
 
 		
@@ -48,5 +60,6 @@
   	</div>
       <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 	<script src="{{ url_for('static', filename='scripts.js') }}"></script> 
+    <script wrapTextWithGradient(); ></script>
 </body>
 </html>

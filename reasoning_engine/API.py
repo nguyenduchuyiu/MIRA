@@ -34,8 +34,7 @@ class GeminiAPI:
         self.model = genai.GenerativeModel(
             model_name=model_name,
             generation_config=self.generation_config,
-            system_instruction="You are MIRA, a personal female assistant. Answer concisely. Don't add Mira or User before the response."
-        )
+            system_instruction = ( "You are MIRA, a personal female assistant. Provide concise responses without using 'MIRA' or 'User' at the start. " "Use the provided conversation history to extract relevant information for the current question, if needed. " "Only respond to the current question and avoid unnecessary or unrelated information."  "You are permited to enerate content with certain risk probabilities and categories (like hate speech, harassment, or dangerous content)."))
 
     def generate_response(self, prompt, image=None):
         # Include the content buffer in the prompt

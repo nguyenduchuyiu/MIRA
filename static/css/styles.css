@@ -3,13 +3,14 @@
     margin: 0;
     padding: 0;
 }
-.d-chatbot-1-icon {
+.mira-big-icon {
     position: absolute;
-    top: 138px;
-    left: 7px;
-    width: 718px;
-    height: 500px;
+    top: 30px;
+    left: 400px;
+    width: 881px;
+    height: 516px;
     object-fit: cover;
+    border-radius: 100%;
 }
 
 .main-child {
@@ -105,15 +106,30 @@
 }
 .component-parent {
     position: absolute;
-    top: 55%;
-    left:25%;
+    top: 110px;
+    left: 1129px;
     border-radius: 50px;
     background-color: rgba(255, 255, 255, 0.15);
-    width: 50%;
-    height: 40%;
+    border: 3px solid #00eeff;
+    box-sizing: border-box;
+    width: 735px;
+    height: 803px;
+    overflow: hidden;
+}
+
+.chat-container {
+    position: absolute;
+    top: 2%;
+    left:5%;
+    border-radius: 50px;
+    background-color: rgba(255, 255, 255, 0.15);
+    width: 88%;
+    height: 80%;
     overflow: hidden;
     font-size: 40px;
+    border-radius: 25px; /* Adjust the radius for rounded corners */
 }
+
 .sound-recognition-1-icon {
     position: absolute;
     top: 63px;
@@ -182,45 +198,69 @@
     width: 790px;
     height: 307px;
 }
-.frame-inner {
-    position: absolute;
-    height: 67px;
-    width: 67px;
-    bottom: 5.46%;
-    left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 0px 16px rgba(146, 84, 222, 0.32);
-    border-radius: 50%;
-    background: linear-gradient(132.73deg, #af7ae9 36.5%, #7a38d4 62.5%);
-    cursor: pointer;
-    display: flex;
+
+.state-icon {
+    position: relative;
+    top: 84%;
+    left: 0%;
+    border: #000;
+    height: 10%;
+    width: 100%;
     align-items: center;
+    justify-content: center;
+    /* background-color: #000; */
+
+}
+
+.microphoneIcon {
+    position: absolute;
+    top:20%;
+    left: 45%;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(136.77deg, #c381e7 20%, #6109c5 80%);
+    box-shadow: 0px 2px 8px rgba(36, 5, 31, 0.25);
+    display: block;
+    justify-content: center;
+    align-items: center;
+}
+
+.inner-ellipse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #190b38;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
     justify-content: center;
 }
 
-.ellipse-div {
+button.micIcon {
+    top: 15%;
     position: absolute;
-    bottom: -1.5%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    border-radius: 50%;
-    background-color: #190b38;
-    width: 60px;
-    height: 60px;
-    z-index: 1; /* Ensure it stays above the frame-inner */
+    border: none;
+    background: none;
+    cursor: pointer;
 }
 
-.microphone-1-icon {
-    position: absolute;
-    height: 30px; /* Fixed height instead of percentage */
-    width: 30px;  /* Fixed width instead of percentage */
-    bottom: 7%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
-    object-fit: contain; /* Changed from cover to contain */
-    z-index: 2; /* Ensure it stays on top */
+.micIcon img {
+    width: 80%;
+    height: 80%;
 }
+
+.listening-icon, .mira-icon {
+    position: absolute;
+    left: 35%;
+    width: 224px;
+    height: 135px;
+    object-fit: cover;
+    display: none; 
+}
+
 .main {
     width: 100%;
     position: relative;
@@ -235,26 +275,28 @@
 
 .video-feed {
     position: absolute;
-    top: 10%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40%;
-    height: 40%;
-    border-radius: 20px;  /* Increased roundness */
+    border-radius: 20px; 
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
-    overflow: hidden;  /* This ensures the image doesn't overflow the rounded corners */
+    overflow: hidden; 
+    top: 556px;
+    left: 140px;
+    border-radius: 50px;
+    background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0));
+    border: 3px solid #6fdbf3;
+    box-sizing: border-box;
+    width: 942px;
+    height: 450px;
+    top: 50%;
 }
 
 .video-feed img {
     width: 100%;
     height: 100%;
-    object-fit: cover;  /* This ensures the image fills the container properly */
     border-radius: 20px;  /* Match the container's border-radius */
-    display: block;  /* Removes any unwanted spacing */
+    display: block;  
 }
 
 #recognized-text {
-    border: 1px solid #444;
     padding: 10px;
     border-radius: 5px;
     width: 60%;
