@@ -24,6 +24,7 @@ MIRA features a modular design with:
 
 ## Getting Started
 ### Prerequisites
+- Conda
 - Python 3.10.12
 - Required libraries (see `requirements.txt`)
 
@@ -36,7 +37,10 @@ MIRA features a modular design with:
 
 2. Install libraries:
    ```bash
+   conda create -n mira python=3.10.12
+   conda activate mira
    pip install -r requirements.txt
+   conda install -c anaconda portaudio
    ```
 ## API Setup
 
