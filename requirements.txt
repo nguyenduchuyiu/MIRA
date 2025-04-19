@@ -269,7 +269,7 @@ threadpoolctl==3.5.0
 tiktoken==0.8.0
 tokenizers==0.20.1
 toolz==1.0.0
-torch==2.5.0
+torch==2.6.0
 torchaudio==2.5.0
 tornado @ file:///home/conda/feedstock_root/build_artifacts/tornado_1724960687225/work
 tqdm==4.66.5
