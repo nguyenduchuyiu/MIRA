@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Get API key from environment variable
-API_KEY = os.getenv('API_KEY')
+API_KEY = os.getenv('GOOGLE_API_KEY', None)
 
 # Configure the API with the obtained key
 genai.configure(api_key=API_KEY)
@@ -21,21 +21,25 @@ class GeminiAPI:
         # Initialize the model
         self.initialize_model()
 
-    def initialize_model(self, model_name='models/gemini-1.5-flash-001'):
+    def initialize_model(self, model_name='models/gemini-2.0-flash'):
         # Set up the generation config
         self.generation_config = GenerationConfig(
             temperature=0.9,
             top_p=1,
             top_k=1,
-            max_output_tokens=4096
+            max_output_tokens=4096,
         )
+            
+        with open('resources/system_instruction.txt', 'r') as file:
+            system_instruction = file.read()
         
         # Initialize the model
         self.model = genai.GenerativeModel(
             model_name=model_name,
             generation_config=self.generation_config,
-            system_instruction = ( "You are MIRA, a personal female assistant. Provide concise responses without using 'MIRA' or 'User' at the start. " "Use the provided conversation history to extract relevant information for the current question, if needed. " "Only respond to the current question and avoid unnecessary or unrelated information."  "You are permited to enerate content with certain risk probabilities and categories (like hate speech, harassment, or dangerous content)."))
-
+            system_instruction=system_instruction,
+        )
+        
     def generate_response(self, prompt, image=None):
         # Include the content buffer in the prompt
         self.append_content_buffer(prompt=prompt, image=image)

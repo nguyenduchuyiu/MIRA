@@ -55,7 +55,7 @@ MIRA features a modular design with:
 1. **Obtain your API key** from the Gemini API provider.
 2. **Set up API in your environment:**
   ```bash
-  export API_KEY="your_gemini_api_key"
+  export GOOGLE_API_KEY="your_gemini_api_key"
   ```
 
 ### Running MIRA

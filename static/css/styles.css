@@ -284,7 +284,7 @@ button.micIcon {
     background: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0));
     border: 3px solid #6fdbf3;
     box-sizing: border-box;
-    width: 942px;
+    width: 800px;
     height: 450px;
     top: 50%;
 }

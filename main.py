@@ -1,5 +1,9 @@
+from datetime import datetime
+import json
+from pathlib import Path
 import time
 import cv2
+import os
 from audio_processing.asr import ASR
 from reasoning_engine.nlu import NLU
 from response_generation.tts import TextToSpeech
@@ -16,6 +20,7 @@ def record_video(duration, fps=30):
 
     fourcc = cv2.VideoWriter_fourcc(*'MJPG')
     current_time = time.strftime("%Y%m%d-%H%M%S")
+    os.makedirs("resources/videos", exist_ok=True)
     video_name = f"resources/videos/record_{current_time}.avi"
     out = cv2.VideoWriter(video_name, fourcc, fps, (640, 480))
 
@@ -47,45 +52,59 @@ def record_video(duration, fps=30):
 
     return video_name
 
+def save_response_with_timestamp(response, directory="resources/detail_graphs", base_filename="response", extension=".json"):
+    # Get the current timestamp in the format YYYY-MM-DDTHH-MM-SS
+    timestamp = datetime.now().strftime("%Y-%m-%dT%H-%M-%S")
+    
+    # Create the full path with the timestamped filename
+    output_file_path = Path(directory) / f"{base_filename}_{timestamp}{extension}"
+    
+    # Ensure the directory exists
+    output_file_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Write the response to the JSON file
+    with open(output_file_path, 'w') as json_file:
+        json.dump(response, json_file, indent=4)
+    
+    print(f"Response saved to {output_file_path}")
 
 if __name__ == "__main__":
-    RECORD_DURATION = 3
+    RECORD_DURATION = 0.1
     image_path = ''
     nlu = NLU()
     # tts = TextToSpeech()
-    gtts = GTextToSpeech()
+    tts = GTextToSpeech()
     vision_processing = VisionProcessing()
     # asr_thread = ASR()
     speech_to_text = SpeechToText()
     
     while True:
         # transcript = asr_thread.start()
-        transcript = speech_to_text.start() 
+        # transcript = speech_to_text.start() 
         
-        # transcript = input("Please enter the transcript: ")
+        transcript = input("Please enter the transcript: ")
         
-        if ("can" in transcript.lower() and "see" in transcript.lower()):
-            print("Let me see")
-            # tts.synthesize("Let me see") #FIXME: Uncomment this
-            video_path = record_video(duration=RECORD_DURATION)  # Record for 3 seconds
-            
-            if video_path is None:
-                print("Video recording failed. Skipping analysis.")
-                # tts.synthesize("Video recording failed.") #FIXME: Uncomment this
-                continue
+        tts.synthesize("Let me see") #FIXME: Uncomment this
+        video_path = record_video(duration=RECORD_DURATION)  # Record for 3 seconds
         
-            image_path = vision_processing.analyze_image(video_path)
+        if video_path is None:
+            print("Video recording failed. Skipping analysis.")
+            tts.synthesize("Video recording failed.") #FIXME: Uncomment this
+            continue
         
-        elif ("i have no questions" in transcript.lower()):
-            print("OK, Ask me anything if you want!")
-            # tts.synthesize("OK, Ask me anything if you want!") #FIXME: Uncomment this
-            exit()
+        image_path = vision_processing.analyze_image(video_path)
+        
+        # elif ("i have no questions" in transcript.lower()):
+        #     print("OK, Ask me anything if you want!")
+        #     # tts.synthesize("OK, Ask me anything if you want!") #FIXME: Uncomment this
+        #     exit()
         
         response = nlu.process(transcript, f'resources/{image_path}')
         print(f"Mira Response: {response}")
         
-        # tts.synthesize(response) #FIXME: Uncomment this
-        gtts.synthesize(response)
+        
+        tts.synthesize(response) #FIXME: Uncomment this
+        # gtts.synthesize(response)
         # Reset
         image_path = ''
         # asr_thread.reset_transcript()
